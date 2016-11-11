@@ -1,0 +1,36 @@
+#include <errno.h>
+ #include <sys/types.h>
+ #include <netdb.h>
+ #include <netinet/in.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/socket.h>
+ #include <stdio.h>
+ #include <syslog.h>
+ #include <signal.h>
+ #include <unistd.h>
+
+#define PORT 1066
+#define MAXLEN 1024
+
+int main()
+{
+	int c_socket;
+
+	struct sockaddr_in c_sock_address_info, server_address_info;
+
+	c_socket = socket(AF_INET, SOCK_DGRAM, 0);
+	c_sock_address_info.sin_family = AF_INET;
+ 	c_sock_address_info.sin_addr.s_addr = htonl(INADDR_ANY);
+ 	c_sock_address_info.sin_port = htons(PORT);
+
+	char message[MAXLEN] = "Hello";
+	
+	server_address_info.sin_family = AF_INET;
+ 	server_address_info.sin_addr.s_addr = htonl(INADDR_ANY);
+ 	server_address_info.sin_port = htons(PORT);
+
+	sendto(c_socket, message, strlen("Hello"), 0, &server_address_info, sizeof server_address_info);
+
+	close(c_socket);
+}
